@@ -1,0 +1,187 @@
+{
+  "info": {
+    "name": "Class Offering Booking System",
+    "_postman_id": "d5b1a4b0-8c40-4f6b-9c7a-123456789abc",
+    "description": "Postman collection for Class Offering Booking System API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Offering",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-User-Id",
+            "value": "{{teacherId}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Geometry Class\",\n  \"description\": \"Weekly geometry tutoring\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/teacher/offerings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "teacher",
+            "offerings"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add Session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-User-Id",
+            "value": "{{teacherId}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"startTime\": \"2026-06-01T09:00:00\",\n  \"endTime\": \"2026-06-01T10:00:00\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/teacher/offerings/{{offeringId}}/sessions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "teacher",
+            "offerings",
+            "{{offeringId}}",
+            "sessions"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Teacher Offerings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{teacherId}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/teacher/offerings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "teacher",
+            "offerings"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Available Offerings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{parentId}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/parent/offerings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "parent",
+            "offerings"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Book Offering",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{parentId}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/parent/offerings/{{offeringId}}/book",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "parent",
+            "offerings",
+            "{{offeringId}}",
+            "book"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Parent Bookings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{parentId}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/parent/bookings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "parent",
+            "bookings"
+          ]
+        }
+      }
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "teacherId",
+      "value": "a0000000-0000-0000-0000-000000000001"
+    },
+    {
+      "key": "parentId",
+      "value": "b0000000-0000-0000-0000-000000000002"
+    },
+    {
+      "key": "offeringId",
+      "value": ""
+    }
+  ]
+}
