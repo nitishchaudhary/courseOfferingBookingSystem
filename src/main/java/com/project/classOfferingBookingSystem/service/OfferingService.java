@@ -1,5 +1,15 @@
 package com.project.classOfferingBookingSystem.service;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
 import com.project.classOfferingBookingSystem.dto.RequestDtos.*;
 import com.project.classOfferingBookingSystem.dto.ResponseDtos.*;
 import com.project.classOfferingBookingSystem.entity.Offering;
@@ -10,17 +20,8 @@ import com.project.classOfferingBookingSystem.exception.ApplicationException;
 import com.project.classOfferingBookingSystem.repository.OfferingRepository;
 import com.project.classOfferingBookingSystem.repository.SessionRepository;
 import com.project.classOfferingBookingSystem.repository.UserRepository;
+import com.project.classOfferingBookingSystem.utils.DtoConversionUtility;
 import com.project.classOfferingBookingSystem.utils.TimeZoneUtils;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,28 +31,6 @@ public class OfferingService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final SessionRepository sessionRepository;
-
-    private SessionResponse sessionToSessionResponse(Session session, String timeZone) {
-        return new SessionResponse(
-                session.getId(),
-                TimeZoneUtils.getLocalDateTimeFromUTC(timeZone, session.getStartTime()),
-                TimeZoneUtils.getLocalDateTimeFromUTC(timeZone, session.getEndTime())
-        );
-    }
-
-    private OfferingResponse offeringToOfferingResponse(Offering offering, String timeZone) {
-        ZoneId zoneId = ZoneId.of(timeZone);
-        List<SessionResponse> sessionResponse = offering.getSessions().stream()
-                .map(s -> sessionToSessionResponse(s, timeZone))
-                .toList();
-        return new OfferingResponse(
-                offering.getId(),
-                offering.getTitle(),
-                offering.getDescription(),
-                offering.getTeacher().getUsername(),
-                sessionResponse
-        );
-    }
 
     @Transactional
     public OfferingResponse createOffering(UUID userId, CreateOfferingRequest request) {
@@ -68,7 +47,7 @@ public class OfferingService {
                 .build();
 
         Offering savedOffering  = offeringRepository.save(offering);
-        return offeringToOfferingResponse(savedOffering, teacher.getTimeZone());
+        return DtoConversionUtility.offeringToOfferingResponse(savedOffering, teacher.getTimeZone());
     }
 
     @Transactional
@@ -97,7 +76,7 @@ public class OfferingService {
                 .endTime(utcEndTime)
                 .build();
         Session saved = sessionRepository.save(session);
-        return sessionToSessionResponse(saved, teacher.getTimeZone());
+        return DtoConversionUtility.sessionToSessionResponse(saved, teacher.getTimeZone());
     }
 
     @Transactional()
@@ -110,7 +89,7 @@ public class OfferingService {
 
         List<Offering> offeringList = offeringRepository.getOfferingByTeacher(userId);
         return offeringList.stream()
-                .map(s -> offeringToOfferingResponse(s, teacher.getTimeZone()))
+                .map(s -> DtoConversionUtility.offeringToOfferingResponse(s, teacher.getTimeZone()))
                 .toList();
     }
 
@@ -121,7 +100,7 @@ public class OfferingService {
         
         List<Offering> availableOfferings = offeringRepository.findAllWithSessions();
         return availableOfferings.stream()
-                .map(o -> offeringToOfferingResponse(o, user.getTimeZone()))
+                .map(o -> DtoConversionUtility.offeringToOfferingResponse(o, user.getTimeZone()))
                 .toList();
     }
 }
